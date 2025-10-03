@@ -5,6 +5,9 @@
 
 std::vector<std::pair<HWND,std::string>> windows;
 BOOL CALLBACK EnumWindowsProc(HWND hwnd , LPARAM lparam){
+    if(!IsWindowVisible(hwnd)){
+        return TRUE;
+    }
     char title[256];
     GetWindowTextA(hwnd,title,sizeof(title));
     if(strlen(title)>0){
