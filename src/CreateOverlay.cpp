@@ -10,7 +10,10 @@ LRESULT CALLBACK WindowProc(HWND hwnd , UINT umsg , WPARAM wparam , LPARAM lpara
         case WM_PAINT:{
             PAINTSTRUCT ps;
             HDC hdc = BeginPaint(hwnd,&ps);
-            FillRect(hdc,&ps.rcPaint,(HBRUSH)(COLOR_WINDOW+1));
+            HBRUSH hbrush = CreateSolidBrush(RGB(0,0,0));
+
+            FillRect(hdc,&ps.rcPaint,hbrush);
+            DeleteObject(hbrush);
             EndPaint(hwnd,&ps);
             return 0;
         }
@@ -35,7 +38,7 @@ int CreateOverlay(HWND target_hwnd , HINSTANCE hinstance , int cmdshow){
 
     HWND hwnd = CreateWindowExW(WS_EX_LAYERED | WS_EX_TRANSPARENT, L"MyWindowClass", L"My Window", WS_POPUP, x, y, width, height, target_hwnd, NULL, hinstance, NULL);
 
-    SetLayeredWindowAttributes(hwnd, 0, 128, LWA_ALPHA);
+    SetLayeredWindowAttributes(hwnd, RGB(0,0,0), 200, LWA_ALPHA);
 
     ShowWindow(hwnd, cmdshow);
     UpdateWindow(hwnd);
