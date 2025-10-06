@@ -32,7 +32,11 @@ int CreateOverlay(HWND target_hwnd , HINSTANCE hinstance , int cmdshow){
     wc.hInstance = hinstance;
     wc.lpszClassName = L"MyWindowClass";
     RegisterClassW(&wc);
-    HWND hwnd = CreateWindowW(L"MyWindowClass", L"My Window", WS_OVERLAPPEDWINDOW, x, y, width, height, NULL, NULL, hinstance, NULL);
+
+    HWND hwnd = CreateWindowExW(WS_EX_LAYERED | WS_EX_TRANSPARENT, L"MyWindowClass", L"My Window", WS_POPUP, x, y, width, height, target_hwnd, NULL, hinstance, NULL);
+
+    SetLayeredWindowAttributes(hwnd, 0, 128, LWA_ALPHA);
+
     ShowWindow(hwnd, cmdshow);
     UpdateWindow(hwnd);
     MSG msg;
