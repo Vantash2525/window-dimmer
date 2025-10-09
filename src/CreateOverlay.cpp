@@ -47,11 +47,11 @@ int CreateOverlay(HWND target_hwnd , HINSTANCE hinstance , int cmdshow){
     wc.lpszClassName = L"MyWindowClass";
     RegisterClassW(&wc);
 
-    HWND hwnd = CreateWindowExW(WS_EX_LAYERED | WS_EX_TRANSPARENT |WS_EX_TOOLWINDOW | WS_EX_TOPMOST, L"MyWindowClass", L"My Window", WS_POPUP, x, y, width, height, NULL, NULL, hinstance, NULL);
+    HWND hwnd = CreateWindowExW(WS_EX_LAYERED | WS_EX_TRANSPARENT |WS_EX_TOOLWINDOW , L"MyWindowClass", L"My Window", WS_POPUP, x, y, width, height, NULL, NULL, hinstance, NULL);
     
     SetWindowLongPtr(hwnd,GWLP_HWNDPARENT,(LONG_PTR)target_hwnd);
 
-    SetLayeredWindowAttributes(hwnd, RGB(0,0,0), 200, LWA_ALPHA);
+    SetLayeredWindowAttributes(hwnd, RGB(0,0,0), 128, LWA_ALPHA);
     
     ShowWindow(hwnd, cmdshow);
     UpdateWindow(hwnd);
@@ -68,7 +68,9 @@ int CreateOverlay(HWND target_hwnd , HINSTANCE hinstance , int cmdshow){
 }
 
 void update_overlay(HWND hwnd , HWND target_hwnd){
-    if(!IsWindow(target_hwnd)) return;
+    if(!IsWindow(target_hwnd)){
+        PostMessage(hwnd,WM_CLOSE,0,0);
+    }
     RECT rc;
     GetWindowRect(target_hwnd,&rc);
     int x= rc.left;
