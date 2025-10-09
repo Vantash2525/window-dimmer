@@ -3,6 +3,7 @@
 #include <iostream>
 #include <vector>
 #include <string>
+
 int main(){
     std::vector<std::pair<HWND,std::string>> windows = enumerate_windows();
     for (size_t i = 0; i < windows.size(); ++i) {
@@ -21,5 +22,6 @@ int main(){
     HINSTANCE hinstance = GetModuleHandle(NULL);
     int cmdshow = SW_SHOW;
     CreateOverlay(target_hwnd, hinstance, cmdshow);
+
     return 0;
 }
