@@ -11,6 +11,9 @@ LRESULT CALLBACK WindowProc(HWND hwnd , UINT umsg , WPARAM wparam , LPARAM lpara
             if(IsWindowVisible(target_hwnd_global) && IsWindow(target_hwnd_global)){
                 update_overlay(hwnd,target_hwnd_global);
             }
+            else{
+                PostMessage(hwnd,WM_CLOSE,0,0);
+            }
             return 0;
         }
         case WM_DESTROY:
@@ -68,9 +71,6 @@ int CreateOverlay(HWND target_hwnd , HINSTANCE hinstance , int cmdshow){
 }
 
 void update_overlay(HWND hwnd , HWND target_hwnd){
-    if(!IsWindow(target_hwnd)){
-        PostMessage(hwnd,WM_CLOSE,0,0);
-    }
     RECT rc;
     GetWindowRect(target_hwnd,&rc);
     int x= rc.left;
