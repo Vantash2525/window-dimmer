@@ -12,4 +12,7 @@ int CreateOverlay(HWND target_hwnd ,HINSTANCE hinstance , int cmdshow);
 
 void update_overlay(HWND hwnd , HWND target_hwnd);
 
+void set_overlay_brightness(BYTE alpha);
+
+void set_overlay_fps(int fps);
 #endif // UTILITIES_H

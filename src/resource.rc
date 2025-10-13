@@ -1,0 +1,29 @@
+#include <windows.h>
+#include "../include/resource.h"
+
+IDD_MAIN_DIALOG DIALOGEX 0, 0, 260, 200
+STYLE DS_CENTER | WS_CAPTION | WS_SYSMENU
+CAPTION "Window Dimmer"
+FONT 9, "Segoe UI"
+BEGIN
+
+    LTEXT "Select Window:", -1, 10, 10, 80, 10
+
+
+    LISTBOX IDC_WINDOWS_LIST, 10, 25, 240, 90, LBS_NOTIFY | WS_VSCROLL | WS_BORDER
+
+
+    LTEXT "Brightness:", -1, 10, 120, 80, 10
+    CONTROL "", IDC_BRIGHTNESS_SLIDER, "msctls_trackbar32",
+            WS_TABSTOP | TBS_AUTOTICKS, 10, 135, 240, 20
+
+
+    LTEXT "Update Speed (FPS):", -1, 10, 160, 100, 10
+    CONTROL "", IDC_FPS_SLIDER, "msctls_trackbar32",
+            WS_TABSTOP | TBS_AUTOTICKS, 120, 155, 130, 20
+
+
+    DEFPUSHBUTTON "Apply",   IDOK,      25, 180, 60, 14
+    PUSHBUTTON    "Close",   IDCANCEL,  100, 180, 60, 14
+    PUSHBUTTON    "Refresh", IDC_REFRESH, 175, 180, 60, 14
+END

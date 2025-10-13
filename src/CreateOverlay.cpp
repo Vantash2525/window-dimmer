@@ -1,7 +1,11 @@
 #include <windows.h>
 #include "../include/Utilities.h"
 
+
 static HWND target_hwnd_global = NULL;
+static BYTE overlay_alpha = 128;   // default brightness
+static int overlay_fps = 10;       // default FPS
+static HWND overlay_hwnd = NULL;
 
 void update_overlay(HWND hwnd, HWND target_hwnd);
 
@@ -59,7 +63,7 @@ int CreateOverlay(HWND target_hwnd , HINSTANCE hinstance , int cmdshow){
     ShowWindow(hwnd, cmdshow);
     UpdateWindow(hwnd);
 
-    SetTimer(hwnd,1,100,NULL);
+    SetTimer(hwnd,1,10,NULL);
     
 
     MSG msg;
@@ -78,4 +82,19 @@ void update_overlay(HWND hwnd , HWND target_hwnd){
     int width = rc.right - rc.left;
     int height = rc.bottom - rc.top;
     SetWindowPos(hwnd,HWND_TOPMOST,x,y,width,height,SWP_NOZORDER | SWP_NOACTIVATE);
+}
+
+void set_overlay_brightness(BYTE alpha){
+    overlay_alpha = alpha;
+    if(overlay_hwnd){
+        SetLayeredWindowAttributes(overlay_hwnd, RGB(0,0,0), overlay_alpha, LWA_ALPHA);
+    }
+}
+
+void set_overlay_fps(int fps){
+    overlay_fps = fps;
+    if(overlay_hwnd){
+        KillTimer(overlay_hwnd, 1);
+        SetTimer(overlay_hwnd, 1, 1000 / overlay_fps, NULL);
+    }
 }

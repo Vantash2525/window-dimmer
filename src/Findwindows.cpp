@@ -5,9 +5,17 @@
 
 std::vector<std::pair<HWND,std::string>> windows;
 BOOL CALLBACK EnumWindowsProc(HWND hwnd , LPARAM lparam){
-    if(!IsWindowVisible(hwnd)){
+
+    if (!IsWindowVisible(hwnd) || !IsWindowEnabled(hwnd))
         return TRUE;
-    }
+
+    LONG style = GetWindowLong(hwnd, GWL_STYLE);
+
+    if(style & WS_EX_TOOLWINDOW)
+        return TRUE;
+
+    
+
     char title[256];
     GetWindowTextA(hwnd,title,sizeof(title));
     if(strlen(title)>0){
@@ -17,6 +25,7 @@ BOOL CALLBACK EnumWindowsProc(HWND hwnd , LPARAM lparam){
 }
 
 std::vector<std::pair<HWND,std::string>> enumerate_windows(){
+    windows.clear();
     EnumWindows(EnumWindowsProc,0);
     /*char buffer[256];
     for(const auto& win : windows){
