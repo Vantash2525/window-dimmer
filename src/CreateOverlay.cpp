@@ -9,10 +9,10 @@ static HWND overlay_hwnd = NULL;
 
 void update_overlay(HWND hwnd, HWND target_hwnd);
 
-LRESULT CALLBACK WindowProc(HWND hwnd , UINT umsg , WPARAM wparam , LPARAM lparam ){
+LRESULT CALLBACK OverlayProc(HWND hwnd , UINT umsg , WPARAM wparam , LPARAM lparam ){
     switch(umsg){
         case WM_TIMER:{
-            if(IsWindowVisible(target_hwnd_global) && IsWindow(target_hwnd_global)){
+            if(wparam == 1 && IsWindowVisible(target_hwnd_global) && IsWindow(target_hwnd_global)){
                 update_overlay(hwnd,target_hwnd_global);
             }
             else{
@@ -21,7 +21,8 @@ LRESULT CALLBACK WindowProc(HWND hwnd , UINT umsg , WPARAM wparam , LPARAM lpara
             return 0;
         }
         case WM_DESTROY:
-            PostQuitMessage(0);
+            overlay_hwnd = NULL;
+            //PostQuitMessage(0);
             return 0;
 
         case WM_PAINT:{
@@ -39,7 +40,7 @@ LRESULT CALLBACK WindowProc(HWND hwnd , UINT umsg , WPARAM wparam , LPARAM lpara
         
     }
 }
-int CreateOverlay(HWND target_hwnd , HINSTANCE hinstance , int cmdshow){
+HWND CreateOverlay(HWND target_hwnd , HINSTANCE hinstance , int cmdshow){
     target_hwnd_global = target_hwnd;
     RECT rect;
     GetWindowRect(target_hwnd, &rect);
@@ -49,13 +50,13 @@ int CreateOverlay(HWND target_hwnd , HINSTANCE hinstance , int cmdshow){
     
 
     WNDCLASSW wc = {0};
-    wc.lpfnWndProc = WindowProc;
+    wc.lpfnWndProc = OverlayProc;
     wc.hInstance = hinstance;
     wc.lpszClassName = L"MyWindowClass";
     RegisterClassW(&wc);
 
     HWND hwnd = CreateWindowExW(WS_EX_LAYERED | WS_EX_TRANSPARENT |WS_EX_TOOLWINDOW , L"MyWindowClass", L"My Window", WS_POPUP, x, y, width, height, NULL, NULL, hinstance, NULL);
-    
+    overlay_hwnd = hwnd;
     SetWindowLongPtr(hwnd,GWLP_HWNDPARENT,(LONG_PTR)target_hwnd);
 
     SetLayeredWindowAttributes(hwnd, RGB(0,0,0), 128, LWA_ALPHA);
@@ -64,14 +65,13 @@ int CreateOverlay(HWND target_hwnd , HINSTANCE hinstance , int cmdshow){
     UpdateWindow(hwnd);
 
     SetTimer(hwnd,1,10,NULL);
-    
-
-    MSG msg;
+    /*MSG msg;
     while(GetMessage(&msg,NULL,0,0)){
         TranslateMessage(&msg);
         DispatchMessage(&msg);
-    }
-    return 0;
+    }*/
+
+    return hwnd;
 }
 
 void update_overlay(HWND hwnd , HWND target_hwnd){
@@ -84,17 +84,19 @@ void update_overlay(HWND hwnd , HWND target_hwnd){
     SetWindowPos(hwnd,HWND_TOPMOST,x,y,width,height,SWP_NOZORDER | SWP_NOACTIVATE);
 }
 
-void set_overlay_brightness(BYTE alpha){
+
+
+/*void set_overlay_brightness(BYTE alpha){
     overlay_alpha = alpha;
     if(overlay_hwnd){
         SetLayeredWindowAttributes(overlay_hwnd, RGB(0,0,0), overlay_alpha, LWA_ALPHA);
     }
-}
+}*/
 
-void set_overlay_fps(int fps){
+/*void set_overlay_fps(int fps){
     overlay_fps = fps;
     if(overlay_hwnd){
         KillTimer(overlay_hwnd, 1);
         SetTimer(overlay_hwnd, 1, 1000 / overlay_fps, NULL);
     }
-}
+}*/

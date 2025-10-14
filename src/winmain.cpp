@@ -11,14 +11,13 @@
 
 #pragma comment(lib, "comctl32.lib")
 
-// Globals
-HWND g_hDlg, g_hList, g_hBrightness, g_hFPS;
+HWND g_hDlg, g_hList, g_hBrightness, g_hFPS ;
 HWND g_hTarget = NULL, g_hOverlay = NULL;
 int g_dimLevel = 128;
-int g_updateInterval = 50; // 50 ms = 20 FPS
+int g_updateInterval = 50; 
 std::vector<std::pair<HWND, std::string>> g_windows;
 
-// Populate listbox
+
 void PopulateWindowList(HWND hList) {
     SendMessageW(hList, LB_RESETCONTENT, 0, 0);
     g_windows = enumerate_windows();
@@ -28,7 +27,6 @@ void PopulateWindowList(HWND hList) {
     }
 }
 
-// Dialog procedure
 INT_PTR CALLBACK DlgProc(HWND hDlg, UINT msg, WPARAM wParam, LPARAM lParam) {
     switch (msg) {
     case WM_INITDIALOG:
@@ -53,8 +51,11 @@ INT_PTR CALLBACK DlgProc(HWND hDlg, UINT msg, WPARAM wParam, LPARAM lParam) {
             int sel = (int)SendMessageW(g_hList, LB_GETCURSEL, 0, 0);
             if (sel != LB_ERR) {
                 g_hTarget = g_windows[sel].first;
-                if (g_hOverlay) DestroyWindow(g_hOverlay);
-                CreateOverlay(g_hTarget, GetModuleHandle(NULL), SW_SHOW);
+                if (g_hOverlay) {
+                    DestroyWindow(g_hOverlay);
+                    //g_hOverlay = NULL;
+                }
+                g_hOverlay = CreateOverlay(g_hTarget, GetModuleHandle(NULL), SW_SHOW);
             }
             return TRUE;
         }
@@ -72,10 +73,15 @@ INT_PTR CALLBACK DlgProc(HWND hDlg, UINT msg, WPARAM wParam, LPARAM lParam) {
     case WM_HSCROLL:
         if ((HWND)lParam == g_hBrightness && g_hOverlay) {
                 int val = SendMessage(GetDlgItem(g_hDlg, IDC_BRIGHTNESS_SLIDER), TBM_GETPOS, 0, 0);
-                set_overlay_brightness((BYTE)val);
+                g_dimLevel = val;
+                //set_overlay_brightness((BYTE)val);
+                SetLayeredWindowAttributes(g_hOverlay, RGB(0, 0, 0), g_dimLevel, LWA_ALPHA);
         } else if ((HWND)lParam == g_hFPS) {
                 int val = SendMessage(GetDlgItem(g_hDlg, IDC_FPS_SLIDER), TBM_GETPOS, 0, 0);
-                set_overlay_fps(val);
+                g_updateInterval = 1000 / val;
+                KillTimer(g_hOverlay, 1);
+                SetTimer(g_hOverlay, 1, g_updateInterval, NULL);
+                //set_overlay_fps(val);
         }
         break;
     }
@@ -83,7 +89,6 @@ INT_PTR CALLBACK DlgProc(HWND hDlg, UINT msg, WPARAM wParam, LPARAM lParam) {
     return FALSE;
 }
 
-// WinMain
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int) {
     INITCOMMONCONTROLSEX icex = { sizeof(icex), ICC_STANDARD_CLASSES };
     InitCommonControlsEx(&icex);
