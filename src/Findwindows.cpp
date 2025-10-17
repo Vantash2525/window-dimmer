@@ -14,6 +14,27 @@ BOOL CALLBACK EnumWindowsProc(HWND hwnd , LPARAM lparam){
     if(style & WS_EX_TOOLWINDOW)
         return TRUE;
 
+    wchar_t windowclass[256];
+    GetClassNameW(hwnd,windowclass,sizeof(windowclass)/sizeof(wchar_t));
+    const wchar_t* excludedclasses[] = {
+        L"WorkerW",              // Desktop/Shell worker windows
+        L"Progman",              // Program Manager (Desktop)
+        L"Shell_TrayWnd",        // Taskbar
+        L"StartMenuExperienceHost",
+        L"Windows.UI.Core.CoreWindow", // UWP App/System UI
+        L"ApplicationFrameWindow", // UWP container window (often listed twice)
+        L"MsoCFHeC",             // Office related invisible window
+        L"GHOST_CLASS",          // Used by various background processes
+        L"TransparentWindow",    // Used by screen recording/utility apps
+        L"Program Manager",      // Sometimes listed by title/class
+        L"ProgramManager"        // Another Program Manager variant
+    };
+
+    for(const auto& exclclass : excludedclasses){
+        if(wcscmp(windowclass,exclclass)==0){
+            return TRUE;
+        }
+    }
     
 
     char title[256];
