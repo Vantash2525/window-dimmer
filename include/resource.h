@@ -5,3 +5,4 @@
 #define IDC_REFRESH 1004
 #define IDOK 1
 #define IDCANCEL 2
+#define IDC_FULL_SCREEN 1005

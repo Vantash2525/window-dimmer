@@ -3,7 +3,7 @@
 //
 // Icon
 //
-IDI_APP_ICON ICON "../winshade.ico"
+IDI_APP_ICON ICON "../../winshade.ico"
 
 //
 // Version Information
@@ -21,7 +21,7 @@ BEGIN
         BLOCK "040904b0"
         BEGIN
             VALUE "CompanyName", "Vasanth Mohan"
-            VALUE "FileDescription", "WinShade — Window Dimmer"
+            VALUE "FileDescription", "WinShade A Window Dimmer"
             VALUE "FileVersion", "1.0.0"
             VALUE "InternalName", "WinShade.exe"
             VALUE "OriginalFilename", "WinShade.exe"

@@ -1,5 +1,5 @@
 #include <windows.h>
-#include "../include/resource.h"
+#include "../../include/resource.h"
 
 IDD_MAIN_DIALOG DIALOGEX 0, 0, 260, 200
 STYLE DS_CENTER | WS_CAPTION | WS_SYSMENU |WS_MINIMIZEBOX
@@ -9,6 +9,7 @@ BEGIN
 
     LTEXT "Select Window:", -1, 10, 10, 80, 10
 
+    PUSHBUTTON "Full Screen",IDC_FULL_SCREEN,175,8,60,14
 
     LISTBOX IDC_WINDOWS_LIST, 10, 25, 240, 90, LBS_NOTIFY | WS_VSCROLL | WS_BORDER
 
@@ -24,6 +25,6 @@ BEGIN
 
 
     DEFPUSHBUTTON "Apply",   IDOK,      25, 180, 60, 14
-    PUSHBUTTON    "Close",   IDCANCEL,  100, 180, 60, 14
+    PUSHBUTTON    "Cancel",   IDCANCEL,  100, 180, 60, 14
     PUSHBUTTON    "Refresh", IDC_REFRESH, 175, 180, 60, 14
 END

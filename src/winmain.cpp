@@ -65,10 +65,34 @@ INT_PTR CALLBACK DlgProc(HWND hDlg, UINT msg, WPARAM wParam, LPARAM lParam) {
             return TRUE;
 
         case IDCANCEL:
-            EndDialog(hDlg, 0);
+            if (g_hOverlay) {
+                DestroyWindow(g_hOverlay);
+                g_hOverlay = NULL;
+            }
             return TRUE;
+
+        case IDC_FULL_SCREEN:
+            if(g_hOverlay){
+                DestroyWindow(g_hOverlay);
+                g_hOverlay = NULL;
+            }
+            g_hOverlay = CreateOverlay(NULL, GetModuleHandle(NULL), SW_SHOW);
+            if(!g_hOverlay){
+                MessageBoxA(NULL,"Failed to create full screen overlay","Error",MB_OK | MB_ICONERROR);  
+            }
+            return TRUE;
+            
+
         }
         break;
+
+    case WM_CLOSE: 
+        if (g_hOverlay) {
+            DestroyWindow(g_hOverlay);
+            g_hOverlay = NULL;
+        }
+        EndDialog(hDlg, 0); 
+        return TRUE;
 
     case WM_HSCROLL:
         if ((HWND)lParam == g_hBrightness && g_hOverlay) {
@@ -84,6 +108,18 @@ INT_PTR CALLBACK DlgProc(HWND hDlg, UINT msg, WPARAM wParam, LPARAM lParam) {
                 //set_overlay_fps(val);
         }
         break;
+
+    case IDC_FULL_SCREEN:
+        if (LOWORD(wParam) == IDC_FULL_SCREEN) {
+            int width = GetSystemMetrics(SM_CXSCREEN);
+            int height = GetSystemMetrics(SM_CYSCREEN);
+            HWND fullScreenOverlay = CreateOverlay(NULL, GetModuleHandle(NULL), SW_SHOW);
+            if(!fullScreenOverlay) {
+                MessageBoxA(NULL, "Failed to create full screen overlay", "Error", MB_OK | MB_ICONERROR);
+            }else{
+                MessageBoxA(NULL, "Full screen overlay created", "Info", MB_OK | MB_ICONINFORMATION);
+            }
+        }
     }
 
     return FALSE;
